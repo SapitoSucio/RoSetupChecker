@@ -12,7 +12,8 @@ logging.basicConfig(
 
 class ROSetupChecker:
     def __init__(self):
-        self.current_date = datetime.datetime.today()
+
+        self.current_date = datetime.datetime(2024, 10, 6)
         self.webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
         
         self.max_retries = 3
@@ -42,6 +43,7 @@ class ROSetupChecker:
                     if response.status == 200:
                         logging.info(f"Archivo encontrado: {url}")
                         return url, date_str, prefix, response.headers.get('content-length', '0')
+                    logging.info(f"Archivo no encontrado (status {response.status}): {url}")
                     return None
             except aiohttp.ClientError as e:
                 logging.error(f"Error al realizar la solicitud a {url}: {e}")
@@ -63,6 +65,10 @@ class ROSetupChecker:
             results = await asyncio.gather(*tasks)
             valid_results = [r for r in results if r]
             
+            if not valid_results:
+                logging.info("No se encontraron archivos para la fecha especificada")
+                return
+            
             for url, date_str, prefix, content_length in valid_results:
                 filename = f"{prefix}{os.path.basename(url)}"
                 total_size_in_gb = round(int(content_length) / (1024 ** 3), 2)
@@ -76,7 +82,7 @@ class ROSetupChecker:
                 logging.info(f"Enviando mensaje a Discord para: {filename}")
                 try:
                     async with session.post(self.webhook_url, json={"content": discord_message}):
-                        pass
+                        logging.info(f"Mensaje enviado exitosamente para: {filename}")
                 except Exception as e:
                     logging.error(f"Error al enviar mensaje a Discord: {e}")
 
