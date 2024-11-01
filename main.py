@@ -13,7 +13,7 @@ logging.basicConfig(
 class ROSetupChecker:
     def __init__(self):
 
-        self.current_date = datetime.datetime(2024, 10, 6)
+        self.current_date = datetime.datetime(2024, 6, 10)
         self.webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
         
         self.max_retries = 3
