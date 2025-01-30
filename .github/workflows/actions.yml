@@ -1,4 +1,4 @@
-name: Automated Python Script Execution with README Update
+name: run main.py
 
 on:
   schedule:
@@ -6,44 +6,50 @@ on:
   workflow_dispatch:
 
 jobs:
-  execute-and-commit:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: main  # Asegurar que estamos en la rama correcta
 
-      - name: Set up Python 3.12
+      - name: checkout repo content
+        uses: actions/checkout@v2
+
+      - name: setup python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-          cache: 'pip'
-
-      - name: Install dependencies
+          
+      - name: install python packages
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Update README timestamp
-        run: |
-          CURRENT_TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          sed -i "s/Última revisión:.*/Última revisión: \`${CURRENT_TIME}\`/" README.md
-
-      - name: Execute main script
+          
+      - name: execute py script
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python main.py
 
-      - name: Commit and Push changes
-        if: success()
+      - name: Ensure trailing newline in README
         run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Actions"
+          sed -i -e '$a\' README.md
+
+      - name: Update README with current time
+        run: |
+          CURRENT_TIME=$(TZ="Asia/Seoul" date '+%d/%m/%Y %H.%M')
+          if grep -q "Último check:" README.md; then
+            sed -i "s|Último check: .*|Último check: $CURRENT_TIME (hora corea)|" README.md
+          else
+            echo -e "\nÚltimo check: $CURRENT_TIME (hora corea)" >> README.md
+          fi
+          
+      - name: commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git add -A
-          git diff --staged --quiet || git commit -m "Actualización automática [skip ci]"
-          git push origin main
+          git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
+          
+      - name: push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
