@@ -16,6 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: main  # Asegurar que estamos en la rama correcta
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v4
@@ -30,7 +31,6 @@ jobs:
 
       - name: Update README timestamp
         run: |
-          # Reemplazar la marca de tiempo en README.md
           CURRENT_TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
           sed -i "s/Última revisión:.*/Última revisión: \`${CURRENT_TIME}\`/" README.md
 
@@ -39,23 +39,11 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python main.py
 
-      - name: Commit changes
+      - name: Commit and Push changes
         if: success()
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Actions"
           git add -A
-          git diff --staged --quiet || git commit -m "Actualización automática FTW"
-
-      - name: Push changes
-        if: success()
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.git.createCommit({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              message: 'Actualización automática FTW [skip ci]',
-              tree: context.sha,
-              parents: [context.sha]
-            })
+          git diff --staged --quiet || git commit -m "Actualización automática [skip ci]"
+          git push origin main
