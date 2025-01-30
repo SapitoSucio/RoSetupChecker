@@ -1,4 +1,4 @@
-name: run main.py
+name: Automated Python Script Execution with README Update
 
 on:
   schedule:
@@ -6,37 +6,56 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  execute-and-commit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content to github runner
-
-      - name: setup python
+      - name: Set up Python 3.12
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12' # install the python version needed
-          
-      - name: install python packages
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          
-      - name: execute py script # run main.py
+
+      - name: Update README timestamp
+        run: |
+          # Reemplazar la marca de tiempo en README.md
+          CURRENT_TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          sed -i "s/Última revisión:.*/Última revisión: \`${CURRENT_TIME}\`/" README.md
+
+      - name: Execute main script
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python main.py
-          
-      - name: commit files
+
+      - name: Commit changes
+        if: success()
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Actions"
           git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
-          
-      - name: push changes
-        uses: ad-m/github-push-action@v0.6.0
+          git diff --staged --quiet || git commit -m "Actualización automática FTW"
+
+      - name: Push changes
+        if: success()
+        uses: actions/github-script@v6
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main 
+          script: |
+            github.rest.git.createCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              message: 'Actualización automática FTW [skip ci]',
+              tree: context.sha,
+              parents: [context.sha]
+            })
