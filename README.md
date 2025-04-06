@@ -8,4 +8,4 @@ Este script verifica diariamente la disponibilidad de nuevos setups oficiales de
 - [twRO_RAGNAROK_20250313.exe](http://twcdn.gnjoy.com.tw/ragnarok/Client/RAGNAROK_20250313.exe) (3.75 GB)
 
 
-Último check: 05/04/2025 23.39 (hora corea)
+Último check: 06/04/2025 23.40 (hora corea)
