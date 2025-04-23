@@ -28,6 +28,7 @@ class ROSetupChecker:
             ("http://twcdn.gnjoy.com.tw/ragnarok/Client/RAGNAROK_{date_str}.exe", "%Y%m%d", "twRO_"),
             ("http://twcdn.gnjoy.com.tw/ragnarok/Client/RO_Install_{date_str}.exe", "%y%m%d", "twRO_"),
             ("https://d364v3f2sbnp2e.cloudfront.net/RO_GGH_{date_str}.exe", "%Y-%m-%d", "RO_GGH_"),
+            ("https://ro1patch.gnjoylatam.com/LIVE/client/LATAM_SETUP_{date_str}.exe", "%y%m%d", "LATAM_"),
         ]
         
         self.discord_message_template = """## Nuevo Official RO Setup:
