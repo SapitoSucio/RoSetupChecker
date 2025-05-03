@@ -27,9 +27,11 @@ jobs:
       - name: execute py script
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: python main.py
-        timeout-minutes: 10
-        retries: 3
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: python main.py
 
       - name: Ensure trailing newline in README
         run: |
