@@ -4,6 +4,9 @@ Este script verifica diariamente la disponibilidad de nuevos setups oficiales de
 
 ## Setups Encontrados 📦
 
+### 2025-10-02
+- [twRO_RAGNAROK_20251002.exe](http://twcdn.gnjoy.com.tw/ragnarok/Client/RAGNAROK_20251002.exe) (3.96 GB)
+
 ### 2025-05-15
 - [LATAM_LATAM_SETUP_250515.exe](https://ro1patch.gnjoylatam.com/LIVE/client/LATAM_SETUP_250515.exe) (3.12 GB)
 
@@ -11,4 +14,4 @@ Este script verifica diariamente la disponibilidad de nuevos setups oficiales de
 - [twRO_RAGNAROK_20250313.exe](http://twcdn.gnjoy.com.tw/ragnarok/Client/RAGNAROK_20250313.exe) (3.75 GB)
 
 
-Último check: 01/10/2025 23.45 (hora corea)
+Último check: 02/10/2025 23.42 (hora corea)
