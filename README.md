@@ -15,4 +15,4 @@ Este script verifica diariamente la disponibilidad de nuevos setups oficiales de
 - [kRO_Ragnarok_250317.zip](http://rofull.gnjoy.com/Ragnarok_250317.zip) (3.99 GB)
 
 
-Último check: 26/08/2026 00.22 (hora corea)
+Último check: 27/08/2026 01.01 (hora corea)
